@@ -1,0 +1,13 @@
+services:
+  ghc-pstm:
+    image: pstm-env #nome da imagem 
+    container_name: pstm-dev #nome do conteiner
+    build:
+        context: .
+        dockerfile: Dockerfile #Dockerfile que montará nossa imagem 
+    stdin_open: true
+    tty: true 
+    volumes:
+      - ./ghc_pm:/root/ghc_pm #Volume que terá o ghc com suporte a memória persistente
+    working_dir: /root 
+
