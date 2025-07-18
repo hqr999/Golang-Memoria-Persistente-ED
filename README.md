@@ -14,5 +14,7 @@ Devemos rodar os seguintes comandos para termos o conteiner:
     
     * git init
     
+    * git config --global --add safe.directory /root/ghc_pm
+
     * git remote add origin https://gitlab.rlp.net/zdvresearch/ghc_pm.git
 
