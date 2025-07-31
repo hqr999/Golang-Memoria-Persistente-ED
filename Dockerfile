@@ -55,6 +55,7 @@ RUN wget https://downloads.haskell.org/~cabal/cabal-install-3.0.0.0/cabal-instal
 RUN curl -sSL https://get.haskellstack.org/ | sh && \
     stack upgrade --binary-version 1.9.3
 
+
 # 5. Instalação de Happy 1.19.12 e Alex 3.2.5 via cabal
 RUN cabal update && \
     cabal install happy-1.19.12 alex-3.2.5 \
@@ -62,9 +63,56 @@ RUN cabal update && \
       --install-method=copy \
       --overwrite-policy=always
 
-# 6. Verificação das versões
+# 6. Instalação do Neovim (versão 0.10.0 para compatibilidade com AstroNvim)
+RUN curl -LO https://github.com/neovim/neovim/releases/download/v0.10.0/nvim-linux64.tar.gz && \
+    tar -xzf nvim-linux64.tar.gz && \
+    mv nvim-linux64 /opt/nvim && \
+    ln -s /opt/nvim/bin/nvim /usr/bin/nvim && \
+    rm nvim-linux64.tar.gz
+
+# 7. Instalação do LazyVim
+RUN git clone https://github.com/LazyVim/starter /root/.config/nvim && \
+    rm -rf /root/.config/nvim/.git
+
+
+# 8. Configuração do LazyVim para Haskell
+RUN mkdir -p /root/.config/nvim/lua/plugins && \
+    cat > /root/.config/nvim/lua/plugins/haskell.lua << 'EOF'
+return {
+  -- Haskell syntax highlighting
+  {
+    "neovimhaskell/haskell-vim",
+    ft = "haskell",
+  },
+  -- Simple Haskell LSP support
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        hls = {
+          filetypes = { "haskell", "lhaskell" },
+        },
+      },
+    },
+  },
+}
+EOF
+
+# 9. Instalação do GHCup para melhor compatibilidade com HLS
+RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh && \
+    echo 'source /root/.ghcup/env' >> /root/.bashrc && \
+    /root/.ghcup/bin/ghcup install hls --set
+
+
+# 10. Configuração do ambiente
+ENV TERM=xterm-256color
+ENV EDITOR=nvim
+
+
+# 11. Verificação das versões
 RUN stack --version && \
     cabal --version && \
     ghc --version && \
     happy --version && \
-    alex --version
+    alex --version && \
+    nvim --version
