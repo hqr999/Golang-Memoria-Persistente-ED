@@ -17,4 +17,9 @@ Devemos rodar os seguintes comandos para termos o conteiner:
     * git config --global --add safe.directory /root/ghc_pm
 
     * git remote add origin https://gitlab.rlp.net/zdvresearch/ghc_pm.git
-
+    
+    * Para buildar o compilador ghc_pm, siga os comandos:
+        *   ./boot
+        *   ./configure
+        *   make
+        *   make install
