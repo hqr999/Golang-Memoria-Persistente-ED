@@ -75,28 +75,10 @@ RUN git clone https://github.com/LazyVim/starter /root/.config/nvim && \
     rm -rf /root/.config/nvim/.git
 
 
-# 8. Configuração do LazyVim para Haskell
-RUN mkdir -p /root/.config/nvim/lua/plugins && \
-    cat > /root/.config/nvim/lua/plugins/haskell.lua << 'EOF'
-return {
-  -- Haskell syntax highlighting
-  {
-    "neovimhaskell/haskell-vim",
-    ft = "haskell",
-  },
-  -- Simple Haskell LSP support
-  {
-    "neovim/nvim-lspconfig",
-    opts = {
-      servers = {
-        hls = {
-          filetypes = { "haskell", "lhaskell" },
-        },
-      },
-    },
-  },
-}
-EOF
+#8. Configuração do LazyVim para Haskell 
+RUN mkdir -p /root/.config/nvim/lua/plugins
+COPY haskell.lua /root/.config/nvim/lua/plugins/haskell.lua
+
 
 # 9. Instalação do GHCup para melhor compatibilidade com HLS
 RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh && \
