@@ -1,25 +1,12 @@
 # Como Rodar 
 
-Devemos rodar os seguintes comandos para termos o conteiner:
+Para ter acesso ao compilador go com memória persistente no seu sistema, rode setup-go-pmem.sh.
 
-* Rode o script bash com: **./get-pm.sh (antes faça chmod +x get-pm.sh)**
+Para tornar o script executável rode:
 
-* Crie a imagem com **docker compose build**
+* sudo chmod +x setup-go-pmem.sh 
+* ./setup-go-pmem.sh 
 
-* Rode o conteiner com **docker compose run ghc-pstm /bin/bash**
+## Observação 
+Seu sistema deve ser linux com amd64 para o compilador rodar.
 
-* Dentro do conteiner entre na pasta do ghc_pm e faça: 
-    
-    * cd /root/ghc_pm
-    
-    * git init
-    
-    * git config --global --add safe.directory /root/ghc_pm
-
-    * git remote add origin https://gitlab.rlp.net/zdvresearch/ghc_pm.git
-    
-    * Para buildar o compilador ghc_pm, siga os comandos:
-        *   ./boot
-        *   ./configure
-        *   make
-        *   make install
