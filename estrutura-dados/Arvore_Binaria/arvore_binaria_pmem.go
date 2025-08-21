@@ -263,5 +263,8 @@ func main() {
 		
 		fmt.Print("Inorder traversal (dados carregados): ")
 		arvore.imprimir()
+		arvore.deletar(44)
+		fmt.Print("Inorder traversal (dados carregados) depois do nodo 44 ser deletado: ")
+		arvore.imprimir()
 	}
 }
