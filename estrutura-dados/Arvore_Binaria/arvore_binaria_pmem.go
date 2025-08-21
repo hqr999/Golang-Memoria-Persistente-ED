@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-   "github.com/vmware/go-pmem-transaction/transaction"
+	"github.com/vmware/go-pmem-transaction/transaction"
 	"github.com/vmware/go-pmem-transaction/pmem"
 )
 
@@ -18,13 +18,17 @@ type AVLNode struct {
 	altura   int
 }
 
+// Estrutura para manter uma referência à raiz da árvore
+type ArvoreAVL struct {
+	raiz *AVLNode
+}
+
 func max(a, b int) int {
 	switch {
 	case a > b:
 		return a
 	default:
 		return b
-
 	}
 }
 
@@ -73,24 +77,29 @@ func rotacionarEsquerda(x *AVLNode) *AVLNode {
 func insere_tmpl(raiz *AVLNode, chave int) *AVLNode {
 	if raiz == nil {
 		novoNodo := pnew(AVLNode)
-
-		novoNodo.chave = chave
-		novoNodo.altura = 1
-		novoNodo.direita = nil
-		novoNodo.esquerda = nil
-
+		
+		txn("undo") {
+			novoNodo.chave = chave
+			novoNodo.altura = 1
+			novoNodo.direita = nil
+			novoNodo.esquerda = nil
+		}
+		
 		return novoNodo
 	}
 
 	if chave < raiz.chave {
-		raiz.esquerda = insere_tmpl(raiz.esquerda,chave)
+		raiz.esquerda = insere_tmpl(raiz.esquerda, chave)
 	} else if chave > raiz.chave {
-		raiz.direita = insere_tmpl(raiz.direita,chave)
+		raiz.direita = insere_tmpl(raiz.direita, chave)
 	} else {
 		return raiz
 	}
 
-	raiz.altura = 1 + max(pegaAltura(raiz.esquerda), pegaAltura(raiz.direita))
+	txn("undo") {
+		raiz.altura = 1 + max(pegaAltura(raiz.esquerda), pegaAltura(raiz.direita))
+	}
+	
 	bf := fatorBalanceamento(raiz)
 
 	if bf < -1 {
@@ -111,114 +120,148 @@ func insere_tmpl(raiz *AVLNode, chave int) *AVLNode {
 	return raiz
 }
 
-func valorMinNodo(node *AVLNode) *AVLNode{
-		atual := node 
-		for atual.esquerda != nil {
-			atual = atual.esquerda
+func valorMinNodo(node *AVLNode) *AVLNode {
+	atual := node
+	for atual.esquerda != nil {
+		atual = atual.esquerda
 	}
-	return atual 
+	return atual
 }
 
-func deletaNodo_tmpl(raiz *AVLNode,chave int) *AVLNode {
-		if raiz == nil {
-			return nil 
+func deletaNodo_tmpl(raiz *AVLNode, chave int) *AVLNode {
+	if raiz == nil {
+		return nil
 	}
 
 	if chave < raiz.chave {
-		raiz.esquerda = deletaNodo_tmpl(raiz.esquerda,chave)
+		raiz.esquerda = deletaNodo_tmpl(raiz.esquerda, chave)
 	} else if chave > raiz.chave {
-		raiz.direita = deletaNodo_tmpl(raiz.direita,chave)
+		raiz.direita = deletaNodo_tmpl(raiz.direita, chave)
 	} else {
-			if raiz.esquerda == nil || raiz.direita == nil {
-				var temp *AVLNode 
-				if raiz.esquerda != nil {
-					temp = raiz.esquerda
+		if raiz.esquerda == nil || raiz.direita == nil {
+			var temp *AVLNode
+			if raiz.esquerda != nil {
+				temp = raiz.esquerda
 			} else {
 				temp = raiz.direita
 			}
-			
-			if temp == nil {
-					temp = raiz 
-					raiz = nil 
-			} else {
-				*raiz = *temp 
-			}
-		}else {
-			temp := valorMinNodo(raiz.direita)
-			raiz.chave = temp.chave
-			raiz.direita = deletaNodo_tmpl(raiz.direita,temp.chave)
-		}
 
-	}
-	if raiz == nil {
-			return nil 
-	}
-	raiz.altura = 1 + max(pegaAltura(raiz.esquerda),pegaAltura(raiz.direita))
-	bf := fatorBalanceamento(raiz)
-	if bf < -1 {
-			if fatorBalanceamento(raiz.esquerda) <= 0 {
-				return rotacionarDireita(raiz)
+			if temp == nil {
+				temp = raiz
+				raiz = nil
+			} else {
+				txn("undo") {
+					*raiz = *temp
+				}
+			}
 		} else {
-				raiz.esquerda = rotacionarEsquerda(raiz.esquerda)
-				return rotacionarDireita(raiz)
+			temp := valorMinNodo(raiz.direita)
+			txn("undo") {
+				raiz.chave = temp.chave
+			}
+			raiz.direita = deletaNodo_tmpl(raiz.direita, temp.chave)
+		}
+	}
+
+	if raiz == nil {
+		return nil
+	}
+
+	txn("undo") {
+		raiz.altura = 1 + max(pegaAltura(raiz.esquerda), pegaAltura(raiz.direita))
+	}
+	
+	bf := fatorBalanceamento(raiz)
+
+	if bf < -1 {
+		if fatorBalanceamento(raiz.esquerda) <= 0 {
+			return rotacionarDireita(raiz)
+		} else {
+			raiz.esquerda = rotacionarEsquerda(raiz.esquerda)
+			return rotacionarDireita(raiz)
 		}
 	} else if bf > 1 {
 		if fatorBalanceamento(raiz.direita) >= 0 {
-				return rotacionarEsquerda(raiz)
+			return rotacionarEsquerda(raiz)
 		} else {
-				raiz.direita = rotacionarDireita(raiz.direita)
-				return rotacionarEsquerda(raiz)
-		} 
+			raiz.direita = rotacionarDireita(raiz.direita)
+			return rotacionarEsquerda(raiz)
+		}
 	}
 
 	return raiz
 }
 
-
 func buscar(raiz *AVLNode, chave int) *AVLNode {
 	if raiz == nil || raiz.chave == chave {
-			return raiz 
-	}	
-	if chave < raiz.chave {
-		return buscar(raiz.esquerda,chave)
+		return raiz
 	}
-	return buscar(raiz.direita,chave)
+	if chave < raiz.chave {
+		return buscar(raiz.esquerda, chave)
+	}
+	return buscar(raiz.direita, chave)
 }
 
 func inorder(raiz *AVLNode) {
-		if raiz != nil {
+	if raiz != nil {
 		inorder(raiz.esquerda)
-		fmt.Printf("%d ",raiz.chave)
+		fmt.Printf("%d ", raiz.chave)
 		inorder(raiz.direita)
 	}
 }
 
+func (arvore *ArvoreAVL) inserir(chave int) {
+	txn("undo") {
+		arvore.raiz = insere_tmpl(arvore.raiz, chave)
+	}
+}
+
+func (arvore *ArvoreAVL) deletar(chave int) {
+	txn("undo") {
+		arvore.raiz = deletaNodo_tmpl(arvore.raiz, chave)
+	}
+}
+
+func (arvore *ArvoreAVL) buscarValor(chave int) *AVLNode {
+	return buscar(arvore.raiz, chave)
+}
+
+func (arvore *ArvoreAVL) imprimir() {
+	fmt.Print("Árvore AVL (inorder): ")
+	inorder(arvore.raiz)
+	fmt.Println()
+}
+
 func main() {
-	
-	var raiz *AVLNode 
+	var arvore *ArvoreAVL
 
 	flag.Parse()
 	primeiroInit := pmem.Init(*pmemArquivo)
 
 	if primeiroInit {
-		raiz = (*AVLNode)(pmem.New("root",raiz))
+		fmt.Println("First time initialization")
 		
-		txn("undo"){
-			raiz = insere_tmpl(raiz,11)
-			raiz = insere_tmpl(raiz,22)
-			raiz = insere_tmpl(raiz,55)
-			raiz = insere_tmpl(raiz,44)
-			raiz = insere_tmpl(raiz,77)
-			raiz = insere_tmpl(raiz,66)
-		}
+		// Criar árvore AVL persistente
+		arvore = (*ArvoreAVL)(pmem.New("root", arvore))
+		arvore.raiz = nil
 
-		fmt.Print("Inorder traversal: ")
-		inorder(raiz)
-		fmt.Println()
+		// Inserir valores iniciais
+		arvore.inserir(11)
+		arvore.inserir(22)
+		arvore.inserir(55)
+		arvore.inserir(44)
+		arvore.inserir(77)
+		arvore.inserir(66)
+
+		fmt.Print("Inorder traversal (primeira execução): ")
+		arvore.imprimir()
 
 	} else {
-			raiz = (*AVLNode)(pmem.Get("root",raiz))
-			inorder(raiz)
+		fmt.Println("Loading existing data")
+		// Carregar árvore AVL persistente
+		arvore = (*ArvoreAVL)(pmem.Get("root", arvore))
+		
+		fmt.Print("Inorder traversal (dados carregados): ")
+		arvore.imprimir()
 	}
-
 }
