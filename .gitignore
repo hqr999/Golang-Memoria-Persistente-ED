@@ -1,3 +1,4 @@
+#Arquivos Persistentes
 *.goPool
 
 # Gitignore padrão do golang!!
@@ -29,3 +30,8 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+#Executáveis 
+lista_ligada_pmem
+pilha_pmem 
+arvore_binaria_pmem
