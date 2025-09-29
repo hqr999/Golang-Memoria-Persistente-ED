@@ -24,8 +24,8 @@ var (
 
 func initialize(ptr *data) {
 	txn("undo") {
-		ptr.val1 = 25
-		ptr.val2 = 35
+		ptr.val1 = 33
+		ptr.val2 = 49
 		ptr.magic = magic
 	}
 	println("Data set as ", ptr.val1, " and ", ptr.val2)
