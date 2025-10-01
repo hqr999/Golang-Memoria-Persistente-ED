@@ -14,6 +14,7 @@ type Node struct {
 // Define a estrutura da lista ligada
 type ListaLigada struct {
 	cabeca *Node
+	cauda *Node
 }
 
 // Função para inserir um elemento no inicio da lista ligada
@@ -28,26 +29,21 @@ func (ll *ListaLigada) insereComeco(data int) {
 // Função para inserir um elemento no final da lista ligada
 func (ll *ListaLigada) insereFim(data int) {
 
-	novoNodo := &Node{data: data}
-	novoNodo.data = data
-	novoNodo.proximo = nil
+	novoNodo := &Node{data: data} 
 
 	if ll.cabeca == nil {
 		ll.cabeca = novoNodo
+		ll.cauda = novoNodo
+		return 
 	}
-	atual := ll.cabeca
-	for atual.proximo != nil {
-		atual = atual.proximo
-	}
+	ll.cauda.proximo = novoNodo
+	ll.cauda = novoNodo
 
-	atual.proximo = novoNodo
 }
 
 // Função para inserir um elemento em uma posição específica na lista ligada
 func (ll *ListaLigada) inserePOS(data int, pos int) {
-	novoNodo := &Node{data: data}
-	novoNodo.data = data
-	novoNodo.proximo = nil
+	novoNodo := &Node{data: data, proximo: nil}
 
 	if pos == 0 {
 		ll.insereComeco(data)
