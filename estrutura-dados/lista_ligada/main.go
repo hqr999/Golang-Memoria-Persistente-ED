@@ -15,6 +15,7 @@ type Node struct {
 type ListaLigada struct {
 	cabeca *Node
 	cauda *Node
+	tam int 
 }
 
 // Função para inserir um elemento no inicio da lista ligada
@@ -43,22 +44,35 @@ func (ll *ListaLigada) insereFim(data int) {
 
 // Função para inserir um elemento em uma posição específica na lista ligada
 func (ll *ListaLigada) inserePOS(data int, pos int) {
-	novoNodo := &Node{data: data, proximo: nil}
+	
+	if pos < 0 || pos > ll.tam {
+		fmt.Println("Posição Inválida")
+		return 
+	}
+
+	novoNodo :=	&Node{data: data}
 
 	if pos == 0 {
-		ll.insereComeco(data)
-		return
+		novoNodo.proximo = ll.cabeca
+		ll.cabeca = novoNodo
+		if ll.tam == 0 {
+			ll.cauda = novoNodo
+		}
+	} else if pos == ll.tam {
+		ll.cauda.proximo = novoNodo
+		ll.cauda = novoNodo
+	} else {
+			atual := ll.cabeca 
+			for i := 0; i < pos-1; i++ {
+					atual = atual.proximo
+		}
+		
+		novoNodo.proximo = atual.proximo
+		atual.proximo = novoNodo
 	}
-	atual := ll.cabeca
-	for i := 0; i < pos-1; i++ {
-		atual = atual.proximo
-	}
-	if atual == nil {
-		fmt.Println("Posição inválida")
-		return
-	}
-	novoNodo.proximo = atual.proximo
-	atual.proximo = novoNodo
+
+	ll.tam++
+
 }
 
 // Função para remover um elemento em uma posição específica da lista ligada
