@@ -14,86 +14,98 @@ type Node struct {
 // Define a estrutura da lista ligada
 type ListaLigada struct {
 	cabeca *Node
-	cauda *Node
-	tam int 
+	cauda  *Node
+	tam    int
 }
 
 // Função para inserir um elemento no inicio da lista ligada
 func (ll *ListaLigada) insereComeco(data int) {
-	novoNodo := &Node{data: data}
-	novoNodo.data = data
-	novoNodo.proximo = ll.cabeca
+	novoNodo := &Node{data: data, proximo: ll.cabeca}
 	ll.cabeca = novoNodo
 
-}
-
-// Função para inserir um elemento no final da lista ligada
-func (ll *ListaLigada) insereFim(data int) {
-
-	novoNodo := &Node{data: data} 
-
-	if ll.cabeca == nil {
-		ll.cabeca = novoNodo
+	if ll.tam == 0 {
 		ll.cauda = novoNodo
-		return 
-	}
-	ll.cauda.proximo = novoNodo
-	ll.cauda = novoNodo
-
-}
-
-// Função para inserir um elemento em uma posição específica na lista ligada
-func (ll *ListaLigada) inserePOS(data int, pos int) {
-	
-	if pos < 0 || pos > ll.tam {
-		fmt.Println("Posição Inválida")
-		return 
-	}
-
-	novoNodo :=	&Node{data: data}
-
-	if pos == 0 {
-		novoNodo.proximo = ll.cabeca
-		ll.cabeca = novoNodo
-		if ll.tam == 0 {
-			ll.cauda = novoNodo
-		}
-	} else if pos == ll.tam {
-		ll.cauda.proximo = novoNodo
-		ll.cauda = novoNodo
-	} else {
-			atual := ll.cabeca 
-			for i := 0; i < pos-1; i++ {
-					atual = atual.proximo
-		}
-		
-		novoNodo.proximo = atual.proximo
-		atual.proximo = novoNodo
 	}
 
 	ll.tam++
 
 }
 
-// Função para remover um elemento em uma posição específica da lista ligada
-func (ll *ListaLigada) removePOS(pos int) {
-	if pos == 0 {
-		if ll.cabeca != nil {
-			ll.cabeca = ll.cabeca.proximo
-		} else {
-			fmt.Println("Lista Vazia")
-		}
+// Função para inserir um elemento no final da lista ligada
+func (ll *ListaLigada) insereFim(data int) {
+
+	novoNodo := &Node{data: data}
+
+	if ll.tam == 0 {
+		ll.cabeca = novoNodo
+		ll.cauda = novoNodo
+	} else {
+		ll.cauda.proximo = novoNodo
+		ll.cauda = novoNodo
+	}
+	ll.tam++
+
+}
+
+// Função para inserir um elemento em uma posição específica na lista ligada
+func (ll *ListaLigada) inserePOS(data int, pos int) {
+
+	if pos < 0 || pos > ll.tam {
+		fmt.Println("Posição Inválida")
 		return
 	}
+
+	if pos == 0 {
+		ll.insereComeco(data)
+		return
+	}
+	if pos == ll.tam {
+		ll.insereFim(data)
+		return
+	}
+
 	atual := ll.cabeca
-	for i := 0; i < pos-1 && atual != nil; i++ {
+	for i := 0; i < pos-1; i++ {
 		atual = atual.proximo
 	}
-	if atual == nil || atual.proximo == nil {
+	novoNodo := &Node{data: data, proximo: atual.proximo}
+	atual.proximo = novoNodo
+	ll.tam++
+
+}
+
+// Função para remover um elemento em uma posição específica da lista ligada
+func (ll *ListaLigada) removePOS(pos int) {
+
+	if pos < 0 || pos >= ll.tam {
 		fmt.Println("Posição inválida")
 		return
 	}
-	atual.proximo = atual.proximo.proximo
+
+	if pos == 0 {
+		//Remover do começo
+		ll.cabeca = ll.cabeca.proximo
+		if ll.tam == 1 {
+			//lista ficou vazia
+			ll.cauda = nil
+		}
+		ll.tam--
+		return
+	}
+	atual := ll.cabeca
+	for i := 0; i < pos-1; i++ {
+		atual = atual.proximo
+	}
+
+	removido := atual.proximo
+	atual.proximo = removido.proximo
+
+	if pos == ll.tam-1 {
+		// se removermos o último elemento, atualizar a cauda
+		ll.cauda = atual
+	}
+	ll.tam--
+
 }
 
 // Função para imprimir elementos da lista ligada

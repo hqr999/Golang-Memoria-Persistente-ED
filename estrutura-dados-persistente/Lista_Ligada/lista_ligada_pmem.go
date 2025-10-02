@@ -20,100 +20,106 @@ type Node struct {
 //Define a estrutura da lista ligada 
 type ListaLigada struct {
 		cabeca *Node
+		cauda *Node 
+		tam int 
 }
 
 // Função para inserir um elemento no inicio da lista ligada 
 func (ll *ListaLigada) insereComeco(data int){
-		var novoNodo *Node
-		novoNodo = pnew(Node)
+	novoNodo := pnew(Node)
 
-		//Versão automática que encapsula o processo de alocação e log
 	txn("undo") {
 			novoNodo.data = data
 			novoNodo.proximo = ll.cabeca
 			ll.cabeca = novoNodo
+			if ll.tam == 0 {
+				ll.cauda = novoNodo
+		}
+		ll.tam++
 	}
 
-	/*Versão manual do processo de cima 
-	  tx := transaction.NewUndoTx() 
-    tx.Begin()
-    tx.Log(newNode)
-    tx.Log(ll)
-    newNode.data = data
-    newNode.next = ll.head
-    ll.head = newNode
-    tx.End()
-    transaction.Release(tx)*/
 }
 
 // Função para inserir um elemento no final da lista ligada 
 func (ll *ListaLigada) insereFim(data int) {
 
-			var novoNodo *Node 
-			novoNodo = pnew(Node)
+			novoNodo := pnew(Node)
 			novoNodo.data = data 
 			novoNodo.proximo = nil 
 
-			if ll.cabeca == nil {
 				txn("undo") {
-				ll.cabeca = novoNodo
+						if ll.tam == 0 {
+							ll.cabeca = novoNodo 
+							ll.cauda = novoNodo
+						} else {
+							ll.cauda.proximo = novoNodo 
+							ll.cauda = novoNodo
+						}
+						ll.tam++
 		}
-	}
-	atual := ll.cabeca 
-	for atual.proximo != nil {
-		atual = atual.proximo
-	}
-
-	txn("undo") {
-		atual.proximo = novoNodo
-	}
 }
 
 // Função para inserir um elemento em uma posição específica na lista ligada 
 func(ll *ListaLigada) inserePOS(data int,pos int) {
-		var novoNodo *Node
-		novoNodo = pnew(Node)
-		novoNodo.data = data 
-		novoNodo.proximo = nil 
+		if pos < 0 || pos > ll.tam {
+			fmt.Println("Posição inválida")
+			return 
+		}
 
-	if pos == 0{
+	if pos == 0 {
 		ll.insereComeco(data)
 		return 
 	}
-	atual := ll.cabeca 
-	for i := 0; i < pos-1; i++ {
-		atual = atual.proximo
-	}
-	if atual == nil {
-		fmt.Println("Posição inválida")
+	if pos == ll.tam {
+		ll.insereFim(data)
 		return 
 	}
-	txn("undo") {
-		novoNodo.proximo = atual.proximo 
-		atual.proximo = novoNodo
-	}
+
+		novoNodo := pnew(Node)
+		novoNodo.data = data 
+
+		atual := ll.cabeca
+		for i := 0; i < pos-1; i++ {
+			atual = atual.proximo
+		}
+
+		txn("undo"){
+			novoNodo.proximo = atual.proximo 
+			atual.proximo = novoNodo 
+			ll.tam++
+		}
 }
 
 //Função para remover um elemento em uma posição específica da lista ligada
 func (ll *ListaLigada) removePOS(pos int) {
-		if pos == 0 {
-			if ll.cabeca != nil {
-			ll.cabeca = ll.cabeca.proximo
-		} else {
-				fmt.Println("Lista Vazia")
-		}
-		return 
-	}
-	atual := ll.cabeca 
-	for i := 0; i < pos-1 && atual != nil; i++ {
-		atual = atual.proximo 
-	}
-	if atual == nil || atual.proximo == nil {
+	if pos < 0 || pos >= ll.tam {
 		fmt.Println("Posição inválida")
-		return 
+		return
 	}
-	txn("undo") {
-		atual.proximo = atual.proximo.proximo
+
+	if pos == 0 {
+		txn("undo"){
+			ll.cabeca = ll.cabeca.proximo
+			if ll.tam == 1{
+				ll.cauda = nil
+			}
+			ll.tam--
+		}
+		return
+	}
+
+	atual := ll.cabeca 
+	for i := 0; i < pos-1; i++ {
+		atual = atual.proximo
+	}
+
+	txn("undo"){
+		removido := atual.proximo 
+		atual.proximo = removido.proximo 
+		if pos == ll.tam - 1{
+			ll.cauda = atual
+		}
+		ll.tam--
 	}
 }
 
