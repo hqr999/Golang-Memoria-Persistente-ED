@@ -93,7 +93,7 @@ func (ll *ListaLigada) removePOS(pos int) {
 		return
 	}
 	atual := ll.cabeca
-	for i := 0; i < pos-1; i++ {
+	for i := 0; i < pos-1 && atual != nil; i++ {
 		atual = atual.proximo
 	}
 

@@ -2,6 +2,14 @@ package main
 
 import "testing"
 
+func criaLista(n int) *ListaLigada {
+	ll := &ListaLigada{}
+	for i := 0; i < n; i++ {
+		ll.insereFim(i)
+	}
+	return ll
+}
+
 // Benchmark para inserção no começo
 func BenchmarkInsereComeco(b *testing.B) {
 	ll := &ListaLigada{}
@@ -20,30 +28,20 @@ func BenchmarkInsereFim(b *testing.B) {
 
 // Benchmark para inserção em posição específica
 func BenchmarkInserePOS(b *testing.B) {
-	ll := &ListaLigada{}
-
 	//primeiro preenchemos a lista com b.N elementos
 	for i := 0; i < b.N; i++ {
-		ll.insereFim(i)
+		ll := criaLista(1000)
+		ll.inserePOS(9999, 500)
 	}
 
-	//agora medimos apenas inserções no meio
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		ll.inserePOS(99999, i/2)
-	}
 }
 
 // Benchmark para remoção em posição específica
 func BenchmarkRemovePOS(b *testing.B) {
-	ll := &ListaLigada{}
 
 	//preenchemos a lista
 	for i := 0; i < b.N; i++ {
-		ll.insereFim(i)
-	}
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		ll.removePOS(0) // primeiro a sair
+		ll := criaLista(1000)
+		ll.removePOS(500)
 	}
 }
