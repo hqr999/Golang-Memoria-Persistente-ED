@@ -5,7 +5,7 @@
 EXEC="./lista_bench"
 POOL="lista-ligada.goPool"
 DUR=5
-WORKLOADS=("insert" "update")
+WORKLOADS=("insert" "update" "delete")
 
 #Compilar (use o compilador persistente)
 GO11MODULE=off ~/go-pmem/bin/go build -txn -o lista_bench lista_ligada_pmem.go

@@ -13,7 +13,7 @@ import (
 
 var(
 		arquivoPmem = flag.String("file","lista-ligada.goPool","arquivo de memória persistente")
-	workload = flag.String("workload","insert","tipo do workload: insert | update")
+	workload = flag.String("workload","insert","tipo do workload: insert | update | delete")
 )
 
 type Node struct {
@@ -55,6 +55,38 @@ func(ll *ListaLigada) atualizaAleatorio(){
 	}
 }
 
+
+func(ll *ListaLigada) removePOS(pos int){
+		if pos < 0 || pos >= ll.tam{ 
+			return 
+		}
+
+		txn("undo"){
+			if pos == 0 {
+				ll.cabeca = ll.cabeca.prox 
+				if ll.tam == 1 {
+					ll.cauda = nil
+				}
+				ll.tam-- 
+				return 
+			}
+			anterior := ll.cabeca 
+			for i := 0; i < pos-1 && anterior.prox != nil; i++ {
+					anterior = anterior.prox
+			}
+
+			removido := anterior.prox 
+			if removido == nil {
+				return 
+			}
+			anterior.prox = removido.prox 
+			if pos == ll.tam - 1 {
+				ll.cauda = anterior
+			}
+			ll.tam--
+	}
+}
+
 func main() {
 		flag.Parse()
 		rand.Seed(time.Now().UnixNano())
@@ -75,6 +107,7 @@ func main() {
 		fmt.Printf("Executando workload: %s\n",*workload)
 		insercoes := 0 
 		atualizacoes := 0
+		delecoes := 0
 
 		switch *workload{
 			case "insert":
@@ -99,6 +132,22 @@ func main() {
 							if (insercoes+atualizacoes)%1000 == 0{
 									fmt.Printf("Ops: %d (insert: %d | update: %d)\n",insercoes+atualizacoes,insercoes,atualizacoes)
 						}
+					}
+			case "delete":
+					for {
+								if rand.Float64() < 0.5 {
+									lista.insereComeco(rand.Intn(201)) //50% inserção 								 
+									insercoes++
+							} else if lista.tam > 0 {
+								pos := rand.Intn(lista.tam)
+								lista.removePOS(pos)
+								delecoes++
+							}
+						
+							if (insercoes+delecoes)%1000 == 0{
+				fmt.Printf("Ops: %d (insert: %d | delete: %d | tam: %d)\n",insercoes+delecoes,insercoes,delecoes, lista.tam)
+						}
+
 					}
 			default:
 					fmt.Println("Workload inválido. Use -workload=insert ou -workload=update")

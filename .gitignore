@@ -3,6 +3,8 @@
 *lista_bench
 *tmp_insert.log
 *tmp_update.log
+*tmp_delete.log
+
 
 # Gitignore padrão do golang!!
 *.exe
