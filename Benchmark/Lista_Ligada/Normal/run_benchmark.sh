@@ -36,8 +36,7 @@ for W in "${WORKLOADS[@]}"; do
 
   if [ "$CONT" -gt 0 ]; then
     OPS_PER_S=$(echo "scale=3; $CONT/$TEMPO_DECORRIDO_S" | bc)
-    OPS_PER_NS=$(echo "scale=10; $CONT/$TEMPO_DECORRIDO_NS" | bc)
-    echo "Taxa: $OPS_PER_S op/s (${OPS_PER_NS} op/ns)"
+    echo "Taxa: $OPS_PER_S op/s"
   else
     echo "Nenhuma operação detectada"
   fi

@@ -2,23 +2,20 @@
 #Benchmark para lista ligada persistente (insert-only e insert+update)
 #Mede operações por tempo (op/ns e op/s)
 
-EXEC="./lista_bench"
-POOL="lista-ligada.goPool"
+EXEC="./arvore_bench"
 DUR=5
 WORKLOADS=("insert" "update" "delete")
 
 #Compilar (use o compilador persistente)
-GO11MODULE=off ~/go-pmem/bin/go build -txn -o lista_bench lista_ligada_pmem.go
+GO11MODULE=off ~/go-pmem/bin/go build -txn -o arvore_bench arvore_binaria.go
 
 for W in "${WORKLOADS[@]}"; do
   echo "=========================================="
   echo "🚀 Rodando workload: $W por ${DUR}s"
   echo "=========================================="
 
-  rm -f "$POOL"
-
   START=$(date +%s%N)
-  timeout "$DUR" $EXEC -file "$POOL" -workload "$W" >tmp_$W.log 2>&1
+  timeout "$DUR" $EXEC -workload "$W" >tmp_$W.log 2>&1
   END=$(date +%s%N)
 
 
