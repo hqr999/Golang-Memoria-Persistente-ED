@@ -40,10 +40,3 @@ fi
 
 echo "Ambiente Go configurado!"
 go version
-
-echo ""
-echo "Para compilar go-pmem:"
-echo "  cd /home-ext/$USER"
-echo "  git clone https://github.com/jerrinsg/go-pmem"
-echo "  cd go-pmem"
-echo "  ./make.bash"
