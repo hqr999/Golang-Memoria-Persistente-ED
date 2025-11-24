@@ -5,7 +5,7 @@ DUR=5  # segundos
 WORKLOADS=("insert" "update" "delete")
 
 # Compilar com suporte a transações PMEM
-GO11MODULE=off /home-ext/hreuter/go-pmem/bin/go build -txn -o pilha_bench pilha_pmem.go
+GO11MODULE=off ~/go-pmem/bin/go build -txn -o pilha_bench pilha_pmem.go
 
 for W in "${WORKLOADS[@]}"; do
   echo "==============================================="

@@ -7,7 +7,7 @@ DUR=5
 WORKLOADS=("insert" "update" "delete")
 
 #Compilar (use o compilador persistente)
-GO11MODULE=off /home-ext/hreuter/go-pmem/bin/go build -txn -o arvore_bench arvore_binaria.go
+GO11MODULE=off ~/go-pmem/bin/go build -txn -o arvore_bench arvore_binaria.go
 
 for W in "${WORKLOADS[@]}"; do
   echo "=========================================="
