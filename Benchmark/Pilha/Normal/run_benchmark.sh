@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 EXEC="./pilha_bench"
-DUR=5  # segundos
+DUR=15  # segundos
 WORKLOADS=("insert" "update" "delete")
 
 # Compilar com suporte a transações PMEM
-GO111MODULE=off ~/go-pmem/bin/go build -txn -o pilha_bench pilha.go
+GO111MODULE=off /home-ext/emilio/go-pmem/bin/go build -txn -o pilha_bench pilha.go
 
 for W in "${WORKLOADS[@]}"; do
   echo "==============================================="

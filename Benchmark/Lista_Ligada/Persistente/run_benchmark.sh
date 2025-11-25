@@ -3,12 +3,12 @@
 #Mede operações por tempo (op/ns e op/s)
 
 EXEC="./lista_bench"
-POOL="lista-ligada.goPool"
-DUR=5
+POOL="/mnt/nvram0/lista-ligada.goPool"
+DUR=15
 WORKLOADS=("insert" "update" "delete")
 
 #Compilar (use o compilador persistente)
-GO111MODULE=off ~/go-pmem/bin/go build -txn -o lista_bench lista_ligada_pmem.go
+GO111MODULE=off /home-ext/emilio/go-pmem/bin/go build -txn -o lista_bench lista_ligada_pmem.go
 
 for W in "${WORKLOADS[@]}"; do
   echo "=========================================="

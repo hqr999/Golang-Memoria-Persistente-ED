@@ -5,7 +5,7 @@ set -e # Encerra o script se algum comando falhar
 echo "=== Configuração do Ambiente Go Local (Sem Sudo) ==="
 
 # Diretórios importantes (todos em /home-ext/$USER)
-BASE_DIR="/home-ext/$USER"
+BASE_DIR="/home-ext/emilio"
 BOOTSTRAP_DIR="$BASE_DIR/go-bootstrap"
 PMEM_DIR="$BASE_DIR/go-pmem"
 WORKSPACE_DIR="$BASE_DIR/go-workspace"

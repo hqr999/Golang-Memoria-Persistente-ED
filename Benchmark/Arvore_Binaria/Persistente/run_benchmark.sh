@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 EXEC="./arvore_bench"
-POOL="arvore-avl.goPool"
-DUR=5 #segundos 
+POOL="/mnt/nvram0/arvore-avl.goPool"
+DUR=15 #segundos 
 WORKLOADS=("insert" "update" "delete")
 
-GO111MODULE=off ~/go-pmem/bin/go build -txn -o arvore_bench arvore_binaria_pmem.go
+GO111MODULE=off /home-ext/emilio/go-pmem/bin/go build -txn -o arvore_bench arvore_binaria_pmem.go
 
 for W in "${WORKLOADS[@]}"; do
     echo "==============================================="
@@ -25,7 +25,7 @@ for W in "${WORKLOADS[@]}"; do
     fi
     [ -z "$COUNT" ] && COUNT=0
 
-    echo "⏱️ Tempo total: ${ELAPSED_S}s"
+    echo "⏱️ Tempo total: ${tempo_decorrido_S}s"
     echo "🧮 Operações detectadas: ${COUNT}"
 
     if [ "$COUNT" -gt 0 ]; then

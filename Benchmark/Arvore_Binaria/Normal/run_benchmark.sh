@@ -3,11 +3,11 @@
 #Mede operações por tempo (op/ns e op/s)
 
 EXEC="./arvore_bench"
-DUR=5
+DUR=15
 WORKLOADS=("insert" "update" "delete")
 
 #Compilar (use o compilador persistente)
-GO111MODULE=off ~/go-pmem/bin/go build -txn -o arvore_bench arvore_binaria.go
+GO111MODULE=off /home-ext/emilio/go-pmem/bin/go build -txn -o arvore_bench arvore_binaria.go
 
 for W in "${WORKLOADS[@]}"; do
   echo "=========================================="
