@@ -3,7 +3,7 @@
 #Mede operações por tempo (op/ns e op/s)
 
 EXEC="./lista_bench"
-POOL="/mnt/nvram0/lista-ligada.goPool"
+POOL="lista-ligada.goPool"
 DUR=15
 WORKLOADS=("insert" "update" "delete")
 

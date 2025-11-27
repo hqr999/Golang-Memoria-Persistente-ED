@@ -1,0 +1,20 @@
+==========================================
+🚀 Rodando workload: insert por 15s
+==========================================
+⏱️ Tempo total: 15.045
+🧮 Operações totais detectadas: 5571000
+Taxa: 370289.132 op/s
+
+==========================================
+🚀 Rodando workload: update por 15s
+==========================================
+⏱️ Tempo total: 15.011
+🧮 Operações totais detectadas: 365000
+Taxa: 24315.501 op/s
+
+==========================================
+🚀 Rodando workload: delete por 15s
+==========================================
+⏱️ Tempo total: 15.012
+🧮 Operações totais detectadas: 6776000
+Taxa: 451372.235 op/s

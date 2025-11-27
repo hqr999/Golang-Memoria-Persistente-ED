@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	pmemArquivo = flag.String("file", "/mnt/nvram0/arvore-avl.goPool", "arquivo de memória persistente")
+	pmemArquivo = flag.String("file", "arvore-avl.goPool", "arquivo de memória persistente")
 	workload    = flag.String("workload", "insert", "tipo de workload: insert | update | delete")
 )
 

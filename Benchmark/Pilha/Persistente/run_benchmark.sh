@@ -1,6 +1,6 @@
 #!/bin/bash
 EXEC="./pilha_bench"
-POOL="/mnt/nvram0/pilha.goPool"
+POOL="pilha.goPool"
 DUR=15  # segundos
 WORKLOADS=("insert" "update" "delete")
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 EXEC="./arvore_bench"
-POOL="/mnt/nvram0/arvore-avl.goPool"
-DUR=15 #segundos 
+POOL="arvore-avl.goPool"
+DUR=5 #segundos 
 WORKLOADS=("insert" "update" "delete")
 
 GO111MODULE=off /home-ext/emilio/go-pmem/bin/go build -txn -o arvore_bench arvore_binaria_pmem.go
