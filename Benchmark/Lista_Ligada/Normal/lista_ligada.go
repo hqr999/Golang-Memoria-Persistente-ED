@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	workload = flag.String("workload", "insert", "tipo do workload: insert | update | delete")
+	workload = flag.String("workload", "insert", "tipo do workload: insert | read | delete")
 )
 
 type Node struct {
@@ -102,7 +102,7 @@ func main() {
 				fmt.Printf("Inserções até agora: %d\n", insercoes)
 			}
 		}
-	case "update":
+	case "read":
 		for {
 			if rand.Float64() < 0.5 {
 				lista.insereComeco(rand.Intn(201)) //50% inserção

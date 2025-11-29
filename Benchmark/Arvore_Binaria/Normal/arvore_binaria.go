@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	workload = flag.String("workload", "insert", "tipo de workload: insert | update | delete")
+	workload = flag.String("workload", "insert", "tipo de workload: insert | read | delete")
 )
 
 type AVLNode struct {
@@ -213,7 +213,7 @@ func main() {
 			}
 		}
 
-	case "update":
+	case "read":
 		for {
 			if rand.Float64() < 0.5 {
 				arvore.inserir(rand.Intn(200))

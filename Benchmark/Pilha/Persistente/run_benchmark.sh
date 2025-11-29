@@ -2,7 +2,7 @@
 EXEC="./pilha_bench"
 POOL="pilha.goPool"
 DUR=15  # segundos
-WORKLOADS=("insert" "update" "delete")
+WORKLOADS=("insert" "read" "delete")
 
 # Compilar com suporte a transações PMEM
 GO111MODULE=off /home-ext/emilio/go-pmem/bin/go build -txn -o pilha_bench pilha_pmem.go

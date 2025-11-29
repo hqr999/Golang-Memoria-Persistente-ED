@@ -12,7 +12,7 @@ import (
 
 var (
 	pmemArquivo = flag.String("file", "arvore-avl.goPool", "arquivo de memória persistente")
-	workload    = flag.String("workload", "insert", "tipo de workload: insert | update | delete")
+	workload    = flag.String("workload", "insert", "tipo de workload: insert | read | delete")
 )
 
 type AVLNode struct {
@@ -244,7 +244,7 @@ func main(){
 			}
 		}
 
-	case "update":
+	case "read":
 		for {
 			if rand.Float64() < 0.5 {
 				arvore.inserir(rand.Intn(200))

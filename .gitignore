@@ -4,7 +4,7 @@
 *tmp_insert.log
 *tmp_update.log
 *tmp_delete.log
-
+*tmp_read.log
 
 # Gitignore padrão do golang!!
 *.exe

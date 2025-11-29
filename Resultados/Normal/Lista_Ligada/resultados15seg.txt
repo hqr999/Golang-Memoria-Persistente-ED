@@ -6,7 +6,7 @@
 Taxa: 15694876.336 op/s
 
 ==========================================
-🚀 Rodando workload: update por 15s
+🚀 Rodando workload: read por 15s
 ==========================================
 ⏱️ Tempo total: 15.004
 🧮 Operações totais detectadas: 399000

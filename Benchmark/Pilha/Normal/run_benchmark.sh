@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 EXEC="./pilha_bench"
 DUR=15  # segundos
-WORKLOADS=("insert" "update" "delete")
+WORKLOADS=("insert" "read" "delete")
 
 # Compilar com suporte a transações PMEM
 GO111MODULE=off /home-ext/emilio/go-pmem/bin/go build -txn -o pilha_bench pilha.go
